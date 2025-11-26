@@ -44,9 +44,27 @@ struct Vec3 {
         if (len > 0) *this /= len;
         return *this;
     }
+
+    Vec3 reflect(const Vec3& normal) const {
+        return *this - normal * 2.0f * (*this).dot(normal);
+    }
 };
 
 inline Vec3 operator*(float s, const Vec3& v) { return v * s; }
+inline Vec3 max(const Vec3& a, const Vec3& b) {
+    return Vec3(
+        std::max(a.x, b.x),
+        std::max(a.y, b.y),
+        std::max(a.z, b.z)
+    );
+}
+inline Vec3 min(const Vec3& a, const Vec3& b) {
+    return Vec3(
+        std::min(a.x, b.x),
+        std::min(a.y, b.y),
+        std::min(a.z, b.z)
+    );
+}
 
 // Vec4 - for homogeneous coordinates
 struct Vec4 {

@@ -5,12 +5,12 @@
 
 #define PI 3.14159f
 
-#define SCENE_W 1920
-#define SCENE_H 1080
+#define IMG_WIDTH 1920
+#define IMG_HEIGHT 1080
 
 int main() {
-  int width = SCENE_W;
-  int height = SCENE_H;
+  int width = IMG_WIDTH;
+  int height = IMG_HEIGHT;
 
   PPMWriter img(width, height);
   Camera cam(Vec3(0, 0, 0),                // position
@@ -21,6 +21,17 @@ int main() {
   );
 
   Scene scene;
+
+  // Initialize with some default objects
+  scene.addShape(
+      Shape(Shape::ShapeType::SPHERE,
+            Sphere(Vec3(0.0f, -1.0f, -5.0f), 1.0f, Vec3(0.88f, 0.64f, 0.47f))));
+  scene.addShape(
+      Shape(Shape::ShapeType::SPHERE,
+            Sphere(Vec3(2.0f, 0.0f, -6.0f), 1.5f, Vec3(0.39f, 0.50f, 0.76f))));
+
+  scene.addLight(Light(Light::LightType::POINT,
+                       PointLight(Vec3(5.0f, 5.0f, 0.0f), Vec3(1, 1, 1))));
 
   // x to the right, y up, -z into screen
   for (int y = 0; y < height; y++) {

@@ -1,3 +1,6 @@
+#ifndef CAMERA_H
+#define CAMERA_H
+
 #include "math_utils.h"
 #include "ray.h"
 
@@ -54,3 +57,5 @@ class Camera {
   float fov;          // in radians
   float aspectRatio;  // width / height
 };
+
+#endif  // CAMERA_H

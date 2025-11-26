@@ -1,16 +1,17 @@
+#ifndef SCENE_H
+#define SCENE_H
+
 #include <vector>
 
+#include "light.h"
 #include "math_utils.h"
+#include "ray.h"
+#include "shading.h"
 #include "shape.h"
 
 class Scene {
  public:
-  Scene() {
-    // Initialize with some default objects
-
-    spheres.push_back(Sphere(Vec3(0.0f, -1.0f, -5.0f), 1.0f));
-    spheres.push_back(Sphere(Vec3(2.0f, 0.0f, -6.0f), 1.5f));
-  }
+  Scene() = default;
   ~Scene() = default;
 
   Vec3 getPixelColor(const Ray& ray) {
@@ -18,21 +19,28 @@ class Scene {
     closestHit.t = std::numeric_limits<float>::max();
 
     // Check intersection with all spheres
-    for (size_t i = 0; i < spheres.size(); i++) {
-      HitRecord rec = intersect_sphere(ray, spheres[i]);
+    size_t hitID = -1;
+    for (size_t i = 0; i < shapes.size(); i++) {
+      HitRecord rec = shapes[i].intersect(ray);
       // Process hit record to determine color
       if (rec.t < closestHit.t && rec.frontFace) {
+        hitID = i;
         closestHit = rec;
       }
     }
 
     // If no hit, return background color
-    if (closestHit.t == std::numeric_limits<float>::max()) {
-      return Vec3(0.5f, 0.7f, 1.0f);  // Sky blue
-    }
-    return Vec3(1, 0, 0);
+    if (hitID == -1) return Vec3(0, 0, 0);  // Sky blue
+
+    return phongShading(closestHit, shapes[hitID].getColor(), ray, lights);
   }
 
+  void addShape(const Shape& shape) { shapes.push_back(shape); }
+  void addLight(const Light& light) { lights.push_back(light); }
+
  private:
-  std::vector<Sphere> spheres;  // x, y, z, radius
+  std::vector<Light> lights;
+  std::vector<Shape> shapes;
 };
+
+#endif  // SCENE_H
